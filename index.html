@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mileage Tracker | Automatic GPS Mileage & Expense Log</title>
+    <meta
+      name="description"
+      content="Mileage Tracker helps drivers automatically detect trips, track exact GPS kilometres, calculate live fuel and maintenance costs, and export audit-ready PDF & CSV reports."
+    />
+    <style>
+      :root {
+        --primary: #0f6fff;
+        --primary-dark: #0c4bb8;
+        --primary-soft: #eaf3ff;
+        --accent: #17a673;
+        --accent-soft: #ebfff7;
+        --warning: #ffb703;
+        --text: #122033;
+        --muted: #5f6f89;
+        --line: #e6ebf3;
+        --card: #ffffff;
+        --bg: #f5f9ff;
+        --section: #ffffff;
+        --shadow: 0 28px 70px rgba(20, 52, 94, 0.12);
+        --radius: 24px;
+      }
+
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        margin: 0;
+        font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: linear-gradient(180deg, #f9fbff 0%, #edf5ff 100%);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      img { max-width: 100%; display: block; }
+
+      a { color: inherit; text-decoration: none; }
+
+      .container {
+        width: min(1160px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid rgba(230, 235, 243, 0.9);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 80px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        font-size: 1.2rem;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--primary), #9ec9ff);
+        display: grid;
+        place-items: center;
+        color: white;
+        box-shadow: 0 12px 24px rgba(15, 111, 255, 0.25);
+        font-size: 1.25rem;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .nav-links a:hover { color: var(--primary); }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 999px;
+        padding: 15px 24px;
+        font-weight: 700;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+      }
+
+      .btn:hover { transform: translateY(-1px); }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+        box-shadow: 0 18px 32px rgba(31, 101, 207, 0.25);
+      }
+
+      .btn-secondary {
+        background: white;
+        color: var(--text);
+        border: 1px solid var(--line);
+      }
+
+      .hero {
+        padding: 72px 0 48px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        align-items: center;
+        gap: 42px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: var(--primary-soft);
+        color: var(--primary-dark);
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 0.02em;
+      }
+
+      h1 {
+        margin: 18px 0 18px;
+        font-size: clamp(2.6rem, 5vw, 4.5rem);
+        line-height: 1.03;
+        letter-spacing: -0.065em;
+      }
+
+      .hero-copy p {
+        margin: 0;
+        max-width: 620px;
+        color: var(--muted);
+        font-size: 1.08rem;
+      }
+
+      .cta-row {
+        margin-top: 30px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: center;
+      }
+
+      .badge-row {
+        margin-top: 28px;
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        color: var(--muted);
+        font-size: 0.98rem;
+        font-weight: 600;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.7);
+      }
+
+      .badge::before {
+        content: "";
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: inline-block;
+      }
+
+      .hero-visual {
+        position: relative;
+        display: grid;
+        place-items: center;
+      }
+
+      .mockup {
+        position: relative;
+        background: linear-gradient(180deg, #ffffff, #f3f8ff);
+        border: 1px solid rgba(208, 223, 245, 0.9);
+        border-radius: 32px;
+        width: min(93%, 500px);
+        min-height: 620px;
+        padding: 22px 18px 18px;
+        box-shadow: var(--shadow);
+      }
+
+      .phone-bar {
+        width: 136px;
+        height: 12px;
+        margin: 0 auto 18px;
+        border-radius: 999px;
+        background: rgba(17, 38, 67, 0.12);
+      }
+
+      .screen {
+        padding: 18px 16px 10px;
+        border-radius: 24px;
+        background: linear-gradient(180deg, #f5fbff 0%, #edf5ff 100%);
+        border: 1px solid rgba(209, 225, 242, 0.9);
+      }
+
+      .mini-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.9rem;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .dot-group {
+        display: inline-flex;
+        gap: 8px;
+      }
+
+      .dot-group span {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #dfeaff;
+        display: inline-block;
+      }
+
+      .kpi-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .stat-card {
+        padding: 18px 14px;
+        border-radius: 18px;
+        background: white;
+        border: 1px solid var(--line);
+      }
+
+      .stat-card small {
+        display: block;
+        color: var(--muted);
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .stat-card strong {
+        font-size: 1.5rem;
+        letter-spacing: -0.05em;
+      }
+
+      .trip-card {
+        margin-top: 18px;
+        background: linear-gradient(135deg, rgba(15,111,255,0.08), rgba(23,166,115,0.08));
+        border: 1px solid rgba(178, 206, 255, 0.7);
+        border-radius: 22px;
+        padding: 18px 16px;
+      }
+
+      .trip-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .trip-top span {
+        font-weight: 800;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        background: rgba(23,166,115,0.12);
+        color: #0a7f59;
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 7px 10px;
+      }
+
+      .trip-metric {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(201, 213, 224, 0.9);
+      }
+
+      .trip-metric:last-child { border-bottom: none; }
+
+      .trip-metric span { color: var(--muted); font-weight: 600; }
+      .trip-metric strong { font-size: 1.15rem; }
+
+      .floating-card {
+        position: absolute;
+        right: -10px;
+        bottom: 100px;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: 0 18px 42px rgba(11, 38, 66, 0.12);
+        padding: 14px 16px;
+      }
+
+      .floating-card small {
+        display: block;
+        color: var(--muted);
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .floating-card strong {
+        font-size: 1.5rem;
+        letter-spacing: -0.06em;
+      }
+
+      section {
+        padding: 40px 0;
+      }
+
+      .section-head {
+        max-width: 720px;
+        margin: 0 auto 28px;
+        text-align: center;
+      }
+
+      .section-head h2 {
+        margin: 0 0 12px;
+        font-size: clamp(2rem, 4vw, 3rem);
+        letter-spacing: -0.06em;
+      }
+
+      .section-head p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1.02rem;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+      }
+
+      .feature-card {
+        background: var(--card);
+        border: 1px solid rgba(220, 229, 240, 0.9);
+        border-radius: 20px;
+        padding: 26px 20px;
+        box-shadow: 0 15px 28px rgba(23, 38, 60, 0.04);
+      }
+
+      .icon-box {
+        width: 52px;
+        height: 52px;
+        display: grid;
+        place-items: center;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #edf5ff, #ddeeff);
+        color: var(--primary-dark);
+        font-size: 1.5rem;
+        margin-bottom: 16px;
+      }
+
+      .feature-card h3 {
+        margin: 0 0 10px;
+        font-size: 1.3rem;
+      }
+
+      .feature-card p { margin: 0; color: var(--muted); }
+
+      .metrics {
+        background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%);
+        border-top: 1px solid rgba(224, 233, 245, 0.9);
+        border-bottom: 1px solid rgba(224, 233, 245, 0.9);
+      }
+
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .metric-box {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 22px 18px;
+        text-align: center;
+      }
+
+      .metric-box strong {
+        display: block;
+        font-size: clamp(1.9rem, 2vw, 2.6rem);
+        letter-spacing: -0.06em;
+        margin-bottom: 6px;
+      }
+
+      .metric-box span {
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .showcase {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 26px;
+      }
+
+      .panel {
+        background: white;
+        border: 1px solid rgba(220, 229, 240, 0.9);
+        border-radius: 24px;
+        padding: 28px 24px;
+        box-shadow: 0 18px 38px rgba(18, 42, 70, 0.05);
+      }
+
+      .panel h3 {
+        margin: 0 0 18px;
+        font-size: 1.5rem;
+        letter-spacing: -0.04em;
+      }
+
+      .check-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 14px;
+      }
+
+      .check-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      .check-list li::before {
+        content: "✓";
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: rgba(23, 166, 115, 0.12);
+        color: #0b8f65;
+        flex-shrink: 0;
+        font-weight: 900;
+      }
+
+      .report-list {
+        margin-top: 18px;
+        display: grid;
+        gap: 12px;
+      }
+
+      .report-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--bg);
+      }
+
+      .report-row strong { font-size: 1.05rem; }
+      .report-row span { color: var(--muted); font-weight: 700; }
+
+      .cta-banner {
+        margin-top: 24px;
+        background: linear-gradient(135deg, #ecf6ff 0%, #ffffff 100%);
+        border: 1px solid rgba(196, 217, 255, 0.9);
+        border-radius: 28px;
+        padding: 32px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .cta-banner h3 {
+        margin: 0 0 8px;
+        font-size: clamp(1.8rem, 3vw, 2.6rem);
+        letter-spacing: -0.06em;
+      }
+
+      .cta-banner p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      footer {
+        padding: 32px 0 46px;
+        color: var(--muted);
+      }
+
+      .footer-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        border-top: 1px solid rgba(220, 229, 240, 0.9);
+        padding-top: 24px;
+      }
+
+      @media (max-width: 980px) {
+        .hero-grid,
+        .showcase,
+        .features-grid,
+        .metrics-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .nav-links { display: none; }
+        .cta-banner { flex-direction: column; align-items:flex-start; }
+      }
+
+      @media (max-width: 620px) {
+        .nav { min-height: 72px; }
+        .nav-actions { gap: 8px; }
+        .btn { padding: 12px 18px; }
+        .hero { padding-top: 50px; }
+        .hero-copy p { font-size: 1rem; }
+        .floating-card { position: static; margin-top: 18px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container nav">
+        <a href="#top" class="brand" aria-label="Mileage Tracker home">
+          <span class="brand-mark">M</span>
+          <span>Mileage Tracker</span>
+        </a>
+
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="#features">Features</a>
+          <a href="#benefits">Benefits</a>
+          <a href="#reports">Reports</a>
+          <a href="#download">Download</a>
+        </nav>
+
+        <div class="nav-actions">
+          <a class="btn btn-secondary" href="https://github.com/Senterprisehub/Mileage-Tracker" target="_blank" rel="noreferrer">GitHub</a>
+          <a id="navDownload" class="btn btn-primary" href="https://github.com/Senterprisehub/Mileage-Tracker/releases/latest" target="_blank" rel="noreferrer">Download</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow">Offline-first • Private • Subscription-free</div>
+            <h1>Put your mileage and fuel expenses on autopilot.</h1>
+            <p>
+              Automatically detect drives, track exact GPS kilometres, calculate real-time fuel and maintenance costs,
+              and export audit-ready PDF and CSV reports from a single clean mobile workflow.
+            </p>
+
+            <div class="cta-row">
+              <a id="downloadLink" class="btn btn-primary" href="https://github.com/Senterprisehub/Mileage-Tracker/releases/latest" target="_blank" rel="noreferrer">Download Latest APK</a>
+              <a class="btn btn-secondary" href="#features">Explore Features</a>
+            </div>
+
+            <div class="badge-row">
+              <span class="badge">Auto drive detection</span>
+              <span class="badge">Fuel cost tracking</span>
+              <span class="badge">PDF & CSV reports</span>
+            </div>
+          </div>
+
+          <div class="hero-visual" aria-label="Mileage Tracker app preview">
+            <div class="mockup">
+              <div class="phone-bar"></div>
+              <div class="screen">
+                <div class="mini-header">
+                  <span>Today</span>
+                  <div class="dot-group"><span></span><span></span><span></span></div>
+                </div>
+
+                <div class="kpi-row">
+                  <div class="stat-card">
+                    <small>Distance</small>
+                    <strong>84.6 km</strong>
+                  </div>
+                  <div class="stat-card">
+                    <small>Fuel Cost</small>
+                    <strong>₹1,250</strong>
+                  </div>
+                </div>
+
+                <div class="trip-card">
+                  <div class="trip-top">
+                    <span>Trip in progress</span>
+                    <span class="pill">Business</span>
+                  </div>
+
+                  <div class="trip-metric">
+                    <span>Speed</span>
+                    <strong>58 km/h</strong>
+                  </div>
+                  <div class="trip-metric">
+                    <span>Fuel Used</span>
+                    <strong>7.4 L</strong>
+                  </div>
+                  <div class="trip-metric">
+                    <span>Maintenance</span>
+                    <strong>₹234</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="floating-card">
+              <small>Latest release</small>
+              <strong id="releaseVersion">v2.0</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features">
+        <div class="container">
+          <div class="section-head">
+            <h2>Built for drivers, freelancers, and businesses.</h2>
+            <p>
+              From automatic trip capture to expense reporting, every feature is designed to save time, reduce paperwork,
+              and improve accuracy for real-world driving and tax claims.
+            </p>
+          </div>
+
+          <div class="features-grid">
+            <article class="feature-card">
+              <div class="icon-box">📍</div>
+              <h3>Automatic drive detection</h3>
+              <p>Starts and stops recording as you drive, using GPS and motion sensing to reduce manual logging and false starts.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="icon-box">⛽</div>
+              <h3>Live fuel & maintenance cost</h3>
+              <p>Uses current city fuel rates and vehicle settings to calculate real-time fuel burn, maintenance costs, and trip totals.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="icon-box">🚗</div>
+              <h3>Multi-vehicle garage</h3>
+              <p>Track cars, bikes, EVs, trucks, and hybrids with custom efficiency settings, all managed in one place.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="icon-box">💼</div>
+              <h3>Business trip categorization</h3>
+              <p>Separate personal, business, medical, and charity trips automatically to streamline reimbursements and tax reporting.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="icon-box">📄</div>
+              <h3>Professional PDF reports</h3>
+              <p>Generate clean, export-ready PDF and CSV reports for employers, clients, accounting, and tax filing.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="icon-box">🔒</div>
+              <h3>100% private and offline</h3>
+              <p>Keep trip history and financial data on your device with no mandatory sign-in, no subscription, and no cloud lock-in.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="metrics" id="benefits">
+        <div class="container">
+          <div class="metrics-grid">
+            <div class="metric-box">
+              <strong>100%</strong>
+              <span>Private</span>
+            </div>
+            <div class="metric-box">
+              <strong>GPS</strong>
+              <span>Precision tracking</span>
+            </div>
+            <div class="metric-box">
+              <strong>PDF + CSV</strong>
+              <span>Ready to export</span>
+            </div>
+            <div class="metric-box">
+              <strong>Free</strong>
+              <span>No subscription</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="reports">
+        <div class="container">
+          <div class="showcase">
+            <div class="panel">
+              <h3>Why drivers choose it</h3>
+              <ul class="check-list">
+                <li>Automatically capture business and personal trips without manual input.</li>
+                <li>Calculate fuel consumption, distance, wear-and-tear, and total trip costs in real time.</li>
+                <li>Monitor multiple vehicles and switch trip assignments instantly.</li>
+                <li>Stay compliant with organized, audit-friendly documentation.</li>
+              </ul>
+            </div>
+
+            <div class="panel">
+              <h3>Report-ready output</h3>
+              <div class="report-list">
+                <div class="report-row">
+                  <strong>Monthly mileage summary</strong>
+                  <span>PDF</span>
+                </div>
+                <div class="report-row">
+                  <strong>Vehicle expense breakdown</strong>
+                  <span>CSV</span>
+                </div>
+                <div class="report-row">
+                  <strong>Tax deduction totals</strong>
+                  <span>Excel-ready</span>
+                </div>
+                <div class="report-row">
+                  <strong>Trip-by-trip audit log</strong>
+                  <span>Detailed</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cta-banner" id="download">
+            <div>
+              <h3>Ready to start tracking smarter?</h3>
+              <p>Download the latest version and begin managing mileage, costs, and tax-ready reports with confidence.</p>
+            </div>
+            <a id="downloadButton" class="btn btn-primary" href="https://github.com/Senterprisehub/Mileage-Tracker/releases/latest" target="_blank" rel="noreferrer">Download Latest APK</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-inner">
+        <div>
+          <strong style="color: var(--text);">Mileage Tracker</strong>
+          <span> • Automatic GPS mileage & fuel expense log</span>
+        </div>
+        <div id="releaseMeta">Latest release: loading…</div>
+      </div>
+    </footer>
+
+    <script>
+      const repo = 'Senterprisehub/Mileage-Tracker';
+      const releaseApiUrl = `https://api.github.com/repos/${repo}/releases/latest`;
+
+      const defaults = {
+        href: `https://github.com/${repo}/releases/latest`,
+        text: 'Download Latest APK',
+        version: 'v2.0'
+      };
+
+      const setDownloadLink = (href, text, version) => {
+        const links = document.querySelectorAll('#downloadLink, #navDownload, #downloadButton');
+        links.forEach((link) => {
+          link.href = href;
+          link.textContent = text;
+        });
+
+        const versionNode = document.getElementById('releaseVersion');
+        if (versionNode) {
+          versionNode.textContent = version;
+        }
+
+        const releaseMeta = document.getElementById('releaseMeta');
+        if (releaseMeta) {
+          releaseMeta.textContent = `Latest release: ${version}`;
+        }
+      };
+
+      fetch(releaseApiUrl, {
+        headers: { Accept: 'application/vnd.github+json' }
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('GitHub release lookup failed');
+          }
+          return response.json();
+        })
+        .then((release) => {
+          if (!release || !release.assets || !release.assets.length) {
+            throw new Error('No APK asset available');
+          }
+
+          const asset = release.assets.find((item) => /\.apk$/i.test(item.name)) || release.assets[0];
+          const version = release.tag_name || defaults.version;
+          const href = asset && asset.browser_download_url ? asset.browser_download_url : `https://github.com/${repo}/releases/tag/${version}`;
+
+          setDownloadLink(href, `Download ${version} APK`, version);
+        })
+        .catch(() => {
+          setDownloadLink(defaults.href, defaults.text, defaults.version);
+        });
+    </script>
+  </body>
+</html>
