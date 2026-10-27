@@ -1,4 +1,3 @@
-================================================================================
 MILEAGE TRACKER & FUEL EXPENSE LOG
 Smart Automatic GPS Drive Detection, Live Fuel Costing & Tax Deduction Manager
 ================================================================================
