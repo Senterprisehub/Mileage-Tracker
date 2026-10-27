@@ -205,6 +205,8 @@
         position: relative;
         display: grid;
         place-items: center;
+        width: min(100%, 520px);
+        margin-inline: auto;
       }
 
       .mockup {
@@ -327,13 +329,14 @@
 
       .floating-card {
         position: absolute;
-        right: -10px;
-        bottom: 100px;
+        right: -8px;
+        bottom: 86px;
         background: white;
         border: 1px solid var(--line);
         border-radius: 18px;
         box-shadow: 0 18px 42px rgba(11, 38, 66, 0.12);
         padding: 14px 16px;
+        z-index: 2;
       }
 
       .floating-card small {
@@ -550,6 +553,12 @@
 
         .nav-links { display: none; }
         .cta-banner { flex-direction: column; align-items:flex-start; }
+        .hero-visual { width: 100%; }
+        .floating-card {
+          position: static;
+          margin-top: 18px;
+          justify-self: center;
+        }
       }
 
       @media (max-width: 620px) {
@@ -558,7 +567,6 @@
         .btn { padding: 12px 18px; }
         .hero { padding-top: 50px; }
         .hero-copy p { font-size: 1rem; }
-        .floating-card { position: static; margin-top: 18px; }
       }
     </style>
   </head>
