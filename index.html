@@ -806,6 +806,46 @@
         version: 'v2.0'
       };
 
+      const openBrowserChoice = (url) => {
+        try {
+          const targetUrl = new URL(url, window.location.href).href;
+          const isAndroid = /Android/i.test(navigator.userAgent) && !/iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+          if (isAndroid) {
+            const parsed = new URL(targetUrl);
+            const intentUrl = `intent://${parsed.host}${parsed.pathname}${parsed.search}#Intent;` +
+              `scheme=${parsed.protocol.replace(':', '')};` +
+              `S.browser_fallback_url=${encodeURIComponent(targetUrl)};` +
+              `end`;
+            window.location.href = intentUrl;
+            return;
+          }
+
+          const popup = window.open(targetUrl, '_blank', 'noopener,noreferrer');
+          if (!popup) {
+            window.location.href = targetUrl;
+          }
+        } catch (error) {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        }
+      };
+
+      document.addEventListener('click', (event) => {
+        const link = event.target.closest('a[href]');
+        if (!link) return;
+
+        const isDownloadLink = [
+          'downloadLink',
+          'navDownload',
+          'downloadButton'
+        ].includes(link.id);
+
+        if (!isDownloadLink) return;
+
+        event.preventDefault();
+        openBrowserChoice(link.href);
+      });
+
       const setDownloadLink = (href, text, version) => {
         const links = document.querySelectorAll('#downloadLink, #navDownload, #downloadButton');
         links.forEach((link) => {
