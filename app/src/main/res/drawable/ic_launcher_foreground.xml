@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Outer speedometer / compass arc inside 66dp safe zone -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#2563EB"
+        android:strokeWidth="4.5"
+        android:strokeLineCap="round"
+        android:pathData="M30,64 A26,26 0 1,1 78,64" />
+    <!-- Active speed arc highlight -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#10B981"
+        android:strokeWidth="4.5"
+        android:strokeLineCap="round"
+        android:pathData="M54,28 A26,26 0 0,1 78,64" />
+    <!-- Bold car / navigation silhouette in center -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M41,46 L45,36 C45.8,34.2 47.5,33 49.5,33 L58.5,33 C60.5,33 62.2,34.2 63,36 L67,46 L70,48 C71.7,49 73,51 73,53 L73,63 C73,64.7 71.7,66 70,66 L68,66 C66.3,66 65,64.7 65,63 L65,60 L43,60 L43,63 C43,64.7 41.7,66 40,66 L38,66 C36.3,66 35,64.7 35,63 L35,53 C35,51 36.3,49 38,48 L41,46 Z M44.5,45 L63.5,45 L60.5,37.5 L47.5,37.5 L44.5,45 Z M42,54.5 A3,3 0 1,0 42,48.5 A3,3 0 1,0 42,54.5 Z M66,54.5 A3,3 0 1,0 66,48.5 A3,3 0 1,0 66,54.5 Z" />
+    <!-- GPS route pin dot at top -->
+    <path
+        android:fillColor="#10B981"
+        android:pathData="M54,24m-3.5,0a3.5,3.5 0,1 1,7 0a3.5,3.5 0,1 1,-7 0" />
+</vector>
