@@ -1,57 +1,55 @@
 # Mileage Tracker
 
-Put mileage and vehicle expenses on autopilot. Mileage Tracker is an Android app for automatic and manual drive logging, multi-vehicle records, fuel and maintenance estimates, and PDF or CSV exports.
+Put mileage and vehicle expenses on autopilot. **Mileage Tracker** is an Android app for logging drives, keeping vehicle costs organized, and exporting trip records as PDF or CSV.
 
-[Download the latest APK](https://github.com/Senterprisehub/Mileage-Tracker/releases/latest) · [Project landing page](https://senterprisehub.github.io/Mileage-Tracker/) · [View the source](https://github.com/Senterprisehub/Mileage-Tracker)
+[**Download the latest APK**](https://github.com/Senterprisehub/Mileage-Tracker/releases/latest) · [Project landing page](https://senterprisehub.github.io/Mileage-Tracker/) · [Browse the source](https://github.com/Senterprisehub/Mileage-Tracker)
 
-## Features
+## What you can do
 
-- **Automatic and manual trips:** Detect drives in the background using location and motion, or add a trip manually. Automatic detection and background tracking require Android permissions and may be affected by device settings.
-- **Trip history:** Review routes, distance, duration, and notes. Categorize drives as business, personal, medical, or charity, and edit trip details after a drive.
-- **Multiple vehicles:** Maintain vehicle profiles with fuel type, efficiency, and maintenance rates; assign trips to vehicles and compare vehicle totals.
-- **Fuel and cost estimates:** Estimate fuel use, fuel expense, maintenance, tolls, parking, and business mileage deductions using the app's settings. Estimates depend on the information and rates you enter or select; they are not tax or financial advice.
-- **Fuel-price information:** The app can attempt to fetch live city fuel prices for India and uses built-in country/city reference rates as fallbacks. Live price lookup requires an internet connection and may not be available in every location or for every fuel type.
-- **Reports and backups:** Export trip information as PDF or CSV, share reports, and back up or restore app data.
-- **Tracking controls:** Configure automatic tracking, speed threshold, pause/resume behavior, and saved places.
-- **Local-first records:** Trip and vehicle records are stored on your device. Location tracking requires permission; online fuel-price lookup uses network access.
+- **Log drives automatically or manually.** Background location and motion-based detection can record drives; you can also enter trips yourself. Automatic tracking depends on Android permissions and device settings.
+- **Organize trip history.** Review distance and duration, add notes, and categorize drives as business, personal, medical, or charity.
+- **Manage multiple vehicles.** Keep vehicle profiles and assign trips to the right vehicle.
+- **Understand estimated costs.** Use vehicle efficiency and configured rates to estimate fuel use, fuel expense, maintenance, tolls, parking, and mileage deductions. Estimates depend on the trip and vehicle information you provide.
+- **Check fuel-price information.** The app can look up city fuel prices in India when online and use built-in reference rates as a fallback. Prices and estimates may not reflect the final amount paid.
+- **Export and back up records.** Create PDF or CSV reports, share them, and back up or restore app data.
+- **Keep records on your device.** Trip and vehicle records are stored locally. Network access is used for online fuel-price lookup; location access is needed for tracking.
 
-## Get the app
+## Install
 
-1. Open the [latest GitHub release](https://github.com/Senterprisehub/Mileage-Tracker/releases/latest).
-2. Download the APK attached to that release.
-3. Open the APK and follow Android's installation prompts. Android may ask you to allow installs from the browser or file manager; turn that permission off again afterward if you enabled it.
-4. Review the app's location, activity, and notification permissions before enabling automatic background tracking.
+1. Visit [GitHub Releases](https://github.com/Senterprisehub/Mileage-Tracker/releases/latest) and download the APK attached to the latest release.
+2. Open the APK on your Android device and follow the installation prompts. If Android asks you to allow installs from your browser or file manager, you can turn that permission off again after installation.
+3. Review the app's permissions. Grant the location, activity-recognition, and notification permissions you need before enabling automatic background tracking.
 
-The repository currently has a `v3.1` release and the app source declares version `3.1` (version code `12`). For the current APK and its release notes, use the [latest release page](https://github.com/Senterprisehub/Mileage-Tracker/releases/latest). APK availability and contents are determined by the release, not by the source version alone.
+The current source version is **3.2** (version code **13**). Use the [latest release page](https://github.com/Senterprisehub/Mileage-Tracker/releases/latest) for the current APK and release notes.
 
 ## Build from source
 
-This is an Android project written primarily in Kotlin with Jetpack Compose and Room.
+This is a native Android application written primarily in Kotlin, using Jetpack Compose for UI and Room for local data. To build it:
 
-### Requirements
+1. Open this repository in a compatible version of Android Studio.
+2. Allow Gradle to sync and install the Android SDK required by the project (compile SDK 36, extension level 1).
+3. Build and run the `app` configuration on a device or emulator running Android 7.0 (API 24) or later.
 
-- Android Studio with a compatible Android Gradle Plugin and Gradle installation
-- JDK 11-compatible toolchain
-- Android SDK for the project's compile SDK (API 36, extension level 1)
-
-Open the project in Android Studio and build the `app` module. For a signed release build, configure the signing values used by `app/build.gradle.kts` (`KEYSTORE_PATH`, `STORE_PASSWORD`, and `KEY_PASSWORD`) and the expected upload key alias. Never commit keystore files or passwords.
+A signed release build also needs the signing configuration referenced in `app/build.gradle.kts` (`KEYSTORE_PATH`, `STORE_PASSWORD`, and `KEY_PASSWORD`). Do not commit keystores or signing secrets.
 
 ## App details
 
-- Application ID: `com.aistudio.mileagetracker.kxmpzq`
-- Source version: `3.1` (version code `12`)
-- Minimum Android version: Android 7.0 (API 24)
-- Target SDK: 36
-- Main technologies: Kotlin, Jetpack Compose, Room, Google Play Services Location
+| | |
+| --- | --- |
+| Application ID | `com.aistudio.mileagetracker.kxmpzq` |
+| Current source version | `3.2` (version code `13`) |
+| Minimum Android version | Android 7.0 (API 24) |
+| Target SDK | 36 |
+| Main technologies | Kotlin, Jetpack Compose, Room, Google Play Services Location |
 
-Automatic tracking uses foreground location services and may request precise/background location, activity recognition, notifications, and other system permissions. You can use manual trip entry if you do not want to enable automatic tracking. Fuel-price refreshes require network access; trip tracking and saved records are designed to be local-first.
+Automatic tracking uses a foreground location service. Depending on your Android version and the features you enable, Android may request precise or background location, activity recognition, and notification permissions. Manual trip entry is available if you do not want to enable automatic tracking. You can manage permissions in Android settings at any time.
 
 ## Project layout
 
 ```text
 .
 ├── app/                 # Android application module and source
-├── gradle/              # Gradle configuration
+├── gradle/              # Gradle version catalog and wrapper configuration
 ├── index.html           # GitHub Pages landing page
 ├── README.md
 ├── build.gradle.kts
