@@ -1,0 +1,6 @@
+{
+  "name": "Mileage Tracker",
+  "description": "Open-source mileage, tax deduction, and vehicle expense tracker with multi-country norms and automatic GPS tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
